@@ -59,11 +59,11 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 uint16_t read_number();
 uint8_t selector_operation();
-void calculate(uint16_t n1,uint16_t n2,uint8_t operation);
-void negative();
+void calculate_n(uint16_t num1,uint16_t num2,uint8_t operation);
+void negative(uint16_t num1,uint16_t num2);
 void null();
-void solution();
-void printf_solution();
+void solution(uint16_t num1,uint16_t num2,uint8_t operation);
+void printf_solution(uint16_t result);
 
 
 /* USER CODE END PFP */
@@ -116,8 +116,11 @@ int main(void)
 		  n1 =  read_number();
 	  }
 	  operator = selector_operation();
-
-
+	  while(HAL_GPIO_ReadPin(GPIOA, Enter_Reset_Pin) != 1)
+	  {
+		  n2 = read_number();
+	  }
+	  calculate_n(n1, n2, operator);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -217,9 +220,24 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-uint16_t read_number()
-{
+uint16_t read_number(){
+	uint8_t u = 0,c = 0,d = 0,m = 0;
+	uint8_t unidades = 0;
+	uint8_t decenas = 0;
+	uint8_t centenas = 0;
+	uint16_t miles = 0;
+	uint16_t numero = 0;
 
+	u = HAL_GPIO_ReadPin(GPIOA, Unidades_Pin);
+	d = HAL_GPIO_ReadPin(GPIOA, Decenas_Pin);
+	c = HAL_GPIO_ReadPin(GPIOA, Centenas_Pin);
+	m = HAL_GPIO_ReadPin(GPIOA, Miles_Pin);
+
+	while((u == 1) || (d == 1) || (c == 1) || (m == 1)){
+
+	}
+
+	return numero;
 }
 
 uint8_t selector_operation(){
@@ -233,16 +251,16 @@ uint8_t selector_operation(){
 
 	switch (contador)
 	{
-	case '1':
+	case 1:
 		op = 2;
 		break;
-	case '2':
+	case 2:
 		op = '-';
 		break;
-	case '3':
+	case 3:
 		op = '*';
 		break;
-	case '4':
+	case 4:
 		op = '/';
 		break;
 	default:
@@ -252,6 +270,50 @@ uint8_t selector_operation(){
 
 	}
 }
+
+void calculate_n(uint16_t num1,uint16_t num2,uint8_t operation){
+	if(num1 < num2){
+		negative(num2,num1);
+	}else{
+		solution(num1,num2);
+	}
+}
+
+void negative(uint16_t num1,uint16_t num2){
+
+}
+
+void solution(uint16_t num1,uint16_t num2,uint8_t operation){
+	uint16_t result = 0;
+	switch(operation)
+	{
+		case '+':
+			result = num1 + num2;
+			break;
+		case '*':
+			result = num1 * num2;
+			break;
+		case '/':
+			result = num1 / num2;
+			break;
+		default:
+			break;
+	}
+	if(result > 65535){
+		null();
+	}else{
+		printf_solution(result);
+	}
+}
+
+void printf_solution(uinst16_t result){
+
+}
+
+void null(){
+
+}
+
 /* USER CODE END 4 */
 
 /**
